@@ -51,8 +51,9 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(OusterPointXYZIRT,
 )
 
 
-using PointXYZIRT = LiovxPointCustomMsg;
+// using PointXYZIRT = LiovxPointCustomMsg;
 // using PointXYZIRT =VelodynePointXYZIRT;
+using PointXYZIRT = pcl::PointXYZ;
 
 namespace localization {
 
@@ -71,7 +72,7 @@ namespace localization {
 
 
     private:
-        double time_;
+        double time_ = 0.0;//fix???
         CLOUD_PTR cloud_ptr_;  
     };
 

@@ -3,8 +3,10 @@
 #include "glog/logging.h"
 
 namespace localization {
+
 GNSSSubscriber::GNSSSubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size) 
     :nh_(nh) {
+
     subscriber_ = nh_.subscribe(topic_name, buff_size, &GNSSSubscriber::msg_callback, this);
 }
 
@@ -19,6 +21,17 @@ void GNSSSubscriber::msg_callback(const sensor_msgs::NavSatFixConstPtr& nav_sat_
 
     new_gnss_data_.push_back(gnss_data);
 }
+// void GNSSSubscriber::msg_callback(const nmea_msgs::SentenceConstPtr& nmea_msg) {
+//     GNSSData gnss_data;
+//     // 在这里解析 NMEA 句子
+//     std::string sentence = nmea_msg->sentence;
+
+//     // 解析NMEA句子
+//     if (gnss_data.ParseFromNMEA(sentence)) {
+//         new_gnss_data_.push_back(gnss_data);
+//     }
+// }
+
 
 void GNSSSubscriber::ParseData(std::deque<GNSSData>& gnss_data_buff) {
     if (new_gnss_data_.size() > 0) {
@@ -26,4 +39,8 @@ void GNSSSubscriber::ParseData(std::deque<GNSSData>& gnss_data_buff) {
         new_gnss_data_.clear();
     }
 }
+
+
+
+
 }

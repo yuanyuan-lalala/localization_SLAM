@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <string>
+#include <sstream>
+#include <stdlib.h>
+#include <iostream>
 
 #include "Geocentric/LocalCartesian.hpp"
 namespace localization {
@@ -23,6 +26,9 @@ namespace localization {
         static bool origin_position_inited;
 
     public: 
+        bool ParseFromNMEA(const std::string& sentence);
+        double ConvertNMEACoordinateToDecimal(const std::string& nmea_coord, const std::string& direction);
+        std::vector<std::string> SplitNMEAString(const std::string& sentence, char delimiter);
         void InitOriginPosition();
         void UpdateXYZ();
     };

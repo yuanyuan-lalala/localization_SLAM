@@ -10,6 +10,7 @@
 #include <ros/ros.h>
 #include "sensor_msgs/NavSatFix.h"
 #include "sensor_data/GNSS_data.hpp"
+#include "nmea_msgs/Sentence.h"
 
 namespace localization {
 class GNSSSubscriber {
@@ -20,7 +21,8 @@ class GNSSSubscriber {
 
   private:
     void msg_callback(const sensor_msgs::NavSatFixConstPtr& nav_sat_fix_ptr);
-
+    // void msg_callback(const nmea_msgs::SentenceConstPtr& nmea_msg);
+  
   private:
     ros::NodeHandle nh_;
     ros::Subscriber subscriber_;

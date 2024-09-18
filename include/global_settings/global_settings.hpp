@@ -1,0 +1,10 @@
+// global_settings.hpp
+#ifndef LIDAR_LOCALIZATION_GLOBAL_SETTINGS_HPP_
+#define LIDAR_LOCALIZATION_GLOBAL_SETTINGS_HPP_
+
+#include <string>
+
+// 在头文件中声明 WORK_SPACE_PATH
+extern std::string WORK_SPACE_PATH;
+
+#endif  // LIDAR_LOCALIZATION_GLOBAL_SETTINGS_HPP_

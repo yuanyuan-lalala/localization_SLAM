@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(localization_slam)
 
-set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_CXX_STANDARD 14)
+# set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE Debug)
+
+# set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g -pthread")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -22,9 +26,11 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
 )
 
+set(PCL_DIR "/home/yuanyuan/Documents/pcl_version/share/pcl-1.14")
+find_package(PCL 1.14.0 REQUIRED)
 # LIO-SAM
 find_package(OpenMP REQUIRED)
-find_package(PCL REQUIRED QUIET)
+# find_package(PCL REQUIRED QUIET)
 find_package(OpenCV REQUIRED QUIET)
 find_package(GTSAM REQUIRED QUIET)
 find_package(Boost REQUIRED COMPONENTS timer)
@@ -93,9 +99,10 @@ file(GLOB_RECURSE THIRD_PARTY_SRCS "third_party/*.cpp")
 list(REMOVE_ITEM ALL_SRCS ${NODE_SRCS})
 list(REMOVE_ITEM ALL_SRCS ${THIRD_PARTY_SRCS})
 add_executable(localization_slam src/test_frame_node.cpp ${ALL_SRCS})
-target_link_libraries(localization_slam ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog)
+target_link_libraries(localization_slam ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES})
 
-
+add_executable(front_end_node src/front_end_node.cpp ${ALL_SRCS})
+target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES})
 
 
 

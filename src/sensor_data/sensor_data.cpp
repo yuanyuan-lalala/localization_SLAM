@@ -17,6 +17,7 @@ void GNSSData::UpdateXYZ() {
     if (!origin_position_inited) {
         LOG(WARNING) << "GeoConverter has not set origin position";
     }
+    //将经纬高转化为笛卡尔坐标系
     geo_converter.Forward(latitude, longitude, altitude, local_E, local_N, local_U);
 }
 // 分割NMEA句子

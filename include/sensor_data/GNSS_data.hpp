@@ -6,7 +6,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <iostream>
-
+#include"global_settings/global_settings.hpp"
 #include "Geocentric/LocalCartesian.hpp"
 namespace localization {
     class GNSSData {

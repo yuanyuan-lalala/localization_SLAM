@@ -6,7 +6,7 @@
 #include <iostream>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
-
+#include"global_settings/global_settings.hpp"
 struct VelodynePointXYZIRT
 {
     PCL_ADD_POINT4D
@@ -66,8 +66,9 @@ namespace localization {
 
     public:
         CloudData();
-        CLOUD_PTR GetCloudData() const;
-        double GetTime() ;
+        CLOUD_PTR GetCloudData() ;
+        CLOUD_PTR GetCloudData() const ;
+        double GetTime() const ;
         void SetTime(double time);
 
 
@@ -84,12 +85,17 @@ namespace localization {
 
     // 获取点云数据
     template<typename PointT>
-    typename CloudData<PointT>::CLOUD_PTR CloudData<PointT>::GetCloudData() const {
+    typename CloudData<PointT>::CLOUD_PTR CloudData<PointT>::GetCloudData() {
         return cloud_ptr_;
     }
 
     template<typename PointT>
-    double CloudData<PointT>::GetTime()  {
+    typename CloudData<PointT>::CLOUD_PTR  CloudData<PointT>::GetCloudData() const {
+    return cloud_ptr_;
+    }
+
+    template<typename PointT>
+    double CloudData<PointT>::GetTime() const  {
         return time_;
     }
 

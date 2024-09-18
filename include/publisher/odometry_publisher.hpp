@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <ros/ros.h>
 #include <nav_msgs/Odometry.h>
-
+#include"global_settings/global_settings.hpp"
 namespace localization {
 class OdometryPublisher {
   public:

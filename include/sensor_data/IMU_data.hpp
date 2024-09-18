@@ -2,7 +2,7 @@
 #define LIDAR_LOCALIZATION_SENSOR_DATA_IMU_DATA_HPP_
 
 #include <Eigen/Dense>
-
+#include"global_settings/global_settings.hpp"
 namespace localization {
 class IMUData {
   public:

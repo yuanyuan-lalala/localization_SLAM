@@ -6,7 +6,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include "sensor_data/LiDAR_data.hpp"
-
+#include"global_settings/global_settings.hpp"
 
 namespace localization {
 class CloudPublisher {

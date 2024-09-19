@@ -36,9 +36,9 @@ int main(int argc, char *argv[]) {
     std::shared_ptr<CloudPublisher> cloud_pub_ptr = std::make_shared<CloudPublisher>(nh, "current_scan", 100, "map");
     std::shared_ptr<OdometryPublisher> odom_pub_ptr = std::make_shared<OdometryPublisher>(nh, "lidar_odom", "map", "lidar", 100);
 
-    std::deque<CloudData<PointXYZIRT>> cloud_data_buff;
-    std::deque<IMUData> imu_data_buff;
-    std::deque<GNSSData> gnss_data_buff;
+    std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<CloudData<PointXYZIRT>>> cloud_data_buff;
+    std::deque<IMUData,Eigen::aligned_allocator<IMUData>> imu_data_buff;
+    std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>> gnss_data_buff;
     Eigen::Matrix4f lidar_to_imu = Eigen::Matrix4f::Identity();//此处外参可以更改
     bool transform_received = false;
     bool gnss_origin_position_inited = false;

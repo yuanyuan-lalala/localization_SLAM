@@ -33,7 +33,7 @@ void GNSSSubscriber::msg_callback(const sensor_msgs::NavSatFixConstPtr& nav_sat_
 // }
 
 
-void GNSSSubscriber::ParseData(std::deque<GNSSData>& gnss_data_buff) {
+void GNSSSubscriber::ParseData(std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>>& gnss_data_buff) {
     if (new_gnss_data_.size() > 0) {
         gnss_data_buff.insert(gnss_data_buff.end(), new_gnss_data_.begin(), new_gnss_data_.end());
         new_gnss_data_.clear();

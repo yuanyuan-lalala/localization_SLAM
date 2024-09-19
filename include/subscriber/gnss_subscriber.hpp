@@ -17,7 +17,7 @@ class GNSSSubscriber {
   public:
     GNSSSubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size);
     GNSSSubscriber() = default;
-    void ParseData(std::deque<GNSSData>& deque_gnss_data);
+    void ParseData(std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>>& deque_gnss_data);
 
   private:
     void msg_callback(const sensor_msgs::NavSatFixConstPtr& nav_sat_fix_ptr);

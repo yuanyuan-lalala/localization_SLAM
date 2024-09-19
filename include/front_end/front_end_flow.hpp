@@ -10,7 +10,7 @@
 #include "publisher/cloud_publisher.hpp"
 #include "publisher/odometry_publisher.hpp"
 #include "front_end/front_end.hpp"
-
+#include"subscriber/velocity_subscriber.hpp"
 namespace localization {
 class FrontEndFlow {
   public:
@@ -42,10 +42,14 @@ class FrontEndFlow {
     std::shared_ptr<OdometryPublisher> laser_odom_pub_ptr_;
     std::shared_ptr<OdometryPublisher> gnss_pub_ptr_;
     std::shared_ptr<FrontEnd> front_end_ptr_;
+    std::shared_ptr<VelocitySubscriber> velocity_sub_ptr_;
 
-    std::deque<CloudData<PointXYZIRT>> cloud_data_buff_;
-    std::deque<IMUData> imu_data_buff_;
-    std::deque<GNSSData> gnss_data_buff_;
+
+    std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<CloudData<PointXYZIRT>>> cloud_data_buff_;
+    std::deque<IMUData, Eigen::aligned_allocator<IMUData>> imu_data_buff_;
+    std::deque<GNSSData, Eigen::aligned_allocator<GNSSData>> gnss_data_buff_;
+    std::deque<VelocityData,Eigen::aligned_allocator<VelocityData>> velocity_data_buff_;
+    
     Eigen::Matrix4f lidar_to_imu_ = Eigen::Matrix4f::Identity();
     CloudData<PointXYZIRT> current_cloud_data_;
     IMUData current_imu_data_;

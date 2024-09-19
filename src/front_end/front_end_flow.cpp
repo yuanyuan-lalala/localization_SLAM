@@ -9,6 +9,7 @@ FrontEndFlow::FrontEndFlow(ros::NodeHandle& nh) {
     imu_sub_ptr_ = std::make_shared<IMUSubscriber>(nh, "/kitti/oxts/imu", 1000000);
     gnss_sub_ptr_ = std::make_shared<GNSSSubscriber>(nh, "/kitti/oxts/gps/fix", 1000000);
     lidar_to_imu_ptr_ = std::make_shared<TFListener>(nh, "velo_link", "imu_link");
+    velocity_sub_ptr_ = std::make_shared<VelocitySubscriber>(nh, "/kitti/oxts/gps/vel", 1000000);
 
     cloud_pub_ptr_ = std::make_shared<CloudPublisher>(nh, "current_scan", 100, "map");
     local_map_pub_ptr_ = std::make_shared<CloudPublisher>(nh, "local_map", 100, "map");
@@ -51,8 +52,37 @@ bool FrontEndFlow::Run() {
 
 bool FrontEndFlow::ReadData() {
     cloud_sub_ptr_->ParseData(cloud_data_buff_);
-    imu_sub_ptr_->ParseData(imu_data_buff_);
-    gnss_sub_ptr_->ParseData(gnss_data_buff_);
+    
+    static std::deque<IMUData,Eigen::aligned_allocator<IMUData>> unsynced_imu_;
+    static std::deque<VelocityData,Eigen::aligned_allocator<VelocityData>> unsynced_velocity_;
+    static std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>> unsynced_gnss_;
+    
+    
+    
+    imu_sub_ptr_->ParseData(unsynced_imu_);
+    gnss_sub_ptr_->ParseData(unsynced_gnss_);
+    velocity_sub_ptr_->ParseData(unsynced_velocity_);
+
+
+
+    if (cloud_data_buff_.size() == 0)
+        return false;
+    double cloud_time = cloud_data_buff_.front().GetTime();
+    
+    bool valid_imu = IMUData::SyncData(unsynced_imu_, imu_data_buff_, cloud_time);
+    bool valid_velocity = VelocityData::SyncData(unsynced_velocity_, velocity_data_buff_, cloud_time);
+    bool valid_gnss = GNSSData::SyncData(unsynced_gnss_, gnss_data_buff_, cloud_time);
+
+    static bool sensor_inited = false;
+    if (!sensor_inited) {
+        if (!valid_imu || !valid_velocity || !valid_gnss) {
+            cloud_data_buff_.pop_front();
+            return false;
+        }
+        sensor_inited = true;
+    }
+
+
 
     return true;
 }

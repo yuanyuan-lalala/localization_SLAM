@@ -9,6 +9,7 @@
 #include"global_settings/global_settings.hpp"
 #include "Geocentric/LocalCartesian.hpp"
 #include"Eigen/Dense"
+#include "deque"
 namespace localization {
     class GNSSData {
          EIGEN_MAKE_ALIGNED_OPERATOR_NEW 
@@ -33,6 +34,8 @@ namespace localization {
         bool ParseFromNMEA(const std::string& sentence);
         double ConvertNMEACoordinateToDecimal(const std::string& nmea_coord, const std::string& direction);
         std::vector<std::string> SplitNMEAString(const std::string& sentence, char delimiter);
+        static bool SyncData(std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>>& UnsyncedData, std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>>& SyncedData, double sync_time);
+        
         void InitOriginPosition();
         void UpdateXYZ();
     };

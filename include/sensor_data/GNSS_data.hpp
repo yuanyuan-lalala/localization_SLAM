@@ -8,9 +8,12 @@
 #include <iostream>
 #include"global_settings/global_settings.hpp"
 #include "Geocentric/LocalCartesian.hpp"
+#include"Eigen/Dense"
 namespace localization {
     class GNSSData {
+         EIGEN_MAKE_ALIGNED_OPERATOR_NEW 
     public:
+    
         double time = 0.0;
         double longitude = 0.0;
         double latitude = 0.0;
@@ -26,6 +29,7 @@ namespace localization {
         static bool origin_position_inited;
 
     public: 
+    
         bool ParseFromNMEA(const std::string& sentence);
         double ConvertNMEACoordinateToDecimal(const std::string& nmea_coord, const std::string& direction);
         std::vector<std::string> SplitNMEAString(const std::string& sentence, char delimiter);

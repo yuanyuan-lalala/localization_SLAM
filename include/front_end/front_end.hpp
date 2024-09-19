@@ -4,66 +4,68 @@
 #include <deque>
 
 #include <Eigen/Dense>
-#include <pcl/point_types.h>
-#include <pcl/point_cloud.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/registration/ndt.h>
+#include <yaml-cpp/yaml.h>
 
 #include "sensor_data/LiDAR_data.hpp"
-#include"global_settings/global_settings.hpp"
-#include"memory"
-#include <Eigen/Core>
+#include "models/registration/ndt_registration.hpp"
+#include "models/cloud_filter/voxel_filter.hpp"
 
 namespace localization {
-
-
 class FrontEnd {
   public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // 保证内存对齐
-    class Frame {
-      public:
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW  
+  // EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // 保证内存对齐
+    struct Frame { 
         Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
         CloudData<PointXYZIRT> cloud_data;
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // 保证内存对齐
     };
 
   public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     FrontEnd();
 
-    Eigen::Matrix4f Update(const CloudData<PointXYZIRT>& cloud_data);
+    bool InitWithConfig();
+    bool Update(const CloudData<PointXYZIRT>& cloud_data, Eigen::Matrix4f& cloud_pose);
     bool SetInitPose(const Eigen::Matrix4f& init_pose);
-    bool SetPredictPose(const Eigen::Matrix4f& predict_pose);
 
+    bool SaveMap();
     bool GetNewLocalMap(CloudData<PointXYZIRT>::CLOUD_PTR& local_map_ptr);
     bool GetNewGlobalMap(CloudData<PointXYZIRT>::CLOUD_PTR& global_map_ptr);
     bool GetCurrentScan(CloudData<PointXYZIRT>::CLOUD_PTR& current_scan_ptr);
+    bool IsInitialized() const ;
   
   private:
-    void UpdateNewFrame(const Frame& new_key_frame);
-
+    bool InitParam(const YAML::Node& config_node);
+    bool InitDataPath(const YAML::Node& config_node);
+    bool InitRegistration(std::shared_ptr<RegistrationInterface>& registration_ptr, const YAML::Node& config_node);
+    bool InitFilter(std::string filter_user, std::shared_ptr<CloudFilterInterface>& filter_ptr, const YAML::Node& config_node);
+    bool UpdateWithNewFrame(const Frame& new_key_frame);
+   
   private:
-    pcl::VoxelGrid<PointXYZIRT> cloud_filter_;
-    pcl::VoxelGrid<PointXYZIRT> local_map_filter_;
-    pcl::VoxelGrid<PointXYZIRT> display_filter_;
-    
-    
-    
-    // std::shared_ptr<pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ>, 
-                        // Eigen::aligned_allocator<pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ>>> ndt_ptr_;
-    pcl::NormalDistributionsTransform<PointXYZIRT, PointXYZIRT>::Ptr ndt_ptr_;
+    std::string data_path_ = "";
+
+    std::shared_ptr<CloudFilterInterface> frame_filter_ptr_;
+    std::shared_ptr<CloudFilterInterface> local_map_filter_ptr_;
+    std::shared_ptr<CloudFilterInterface> display_filter_ptr_;
+    std::shared_ptr<RegistrationInterface> registration_ptr_; 
 
     std::deque<Frame,Eigen::aligned_allocator<Frame>> local_map_frames_;
     std::deque<Frame,Eigen::aligned_allocator<Frame>> global_map_frames_;
 
     bool has_new_local_map_ = false;
     bool has_new_global_map_ = false;
+    bool initialized_; //add
     CloudData<PointXYZIRT>::CLOUD_PTR local_map_ptr_;
     CloudData<PointXYZIRT>::CLOUD_PTR global_map_ptr_;
     CloudData<PointXYZIRT>::CLOUD_PTR result_cloud_ptr_;
     Frame current_frame_;
 
     Eigen::Matrix4f init_pose_ = Eigen::Matrix4f::Identity();
-    Eigen::Matrix4f predict_pose_ = Eigen::Matrix4f::Identity();
+
+    float key_frame_distance_ = 2.0;
+    int local_frame_num_ = 20;
 };
 }
 

@@ -6,6 +6,7 @@
 namespace localization {
 class IMUData {
   public:
+   EIGEN_MAKE_ALIGNED_OPERATOR_NEW 
     struct LinearAcceleration {
       double x = 0.0;
       double y = 0.0;

@@ -60,6 +60,7 @@ namespace localization {
     // 模板类 CloudData 支持不同类型的点结构
     template<typename PointT>
     class CloudData {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     public:
         using CLOUD = pcl::PointCloud<PointT>;
         using CLOUD_PTR = typename CLOUD::Ptr;

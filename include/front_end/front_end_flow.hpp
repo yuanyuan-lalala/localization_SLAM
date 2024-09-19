@@ -11,6 +11,7 @@
 #include "publisher/odometry_publisher.hpp"
 #include "front_end/front_end.hpp"
 #include"subscriber/velocity_subscriber.hpp"
+#include"tools/file_manager.hpp"
 namespace localization {
 class FrontEndFlow {
   public:
@@ -30,6 +31,7 @@ class FrontEndFlow {
     bool UpdateGNSSOdometry();
     bool UpdateLaserOdometry();
     bool PublishData();
+    bool SaveTrajectory();
 
   private:
     std::shared_ptr<CloudSubscriber> cloud_sub_ptr_;

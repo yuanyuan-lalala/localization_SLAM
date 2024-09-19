@@ -102,13 +102,13 @@ file(GLOB_RECURSE THIRD_PARTY_SRCS "third_party/*.cpp")
 list(REMOVE_ITEM ALL_SRCS ${NODE_SRCS})
 list(REMOVE_ITEM ALL_SRCS ${THIRD_PARTY_SRCS})
 add_executable(localization_slam src/test_frame_node.cpp ${ALL_SRCS})
-target_link_libraries(localization_slam ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(localization_slam ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp )
 
 add_executable(front_end_node src/front_end_node.cpp ${ALL_SRCS})
 ## 添加依赖关系
 add_dependencies(front_end_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(front_end_node ${catkin_EXPORTED_TARGETS} saveMap_gencpp)
-target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp )
 
 
 

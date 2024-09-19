@@ -2,6 +2,7 @@
 
 #include "glog/logging.h"
 #include"Eigen/Dense"
+#include "tools/file_manager.hpp"
 namespace localization {
 FrontEndFlow::FrontEndFlow(ros::NodeHandle& nh) {
     
@@ -43,8 +44,11 @@ bool FrontEndFlow::Run() {
         if (!ValidData())
             continue;
         UpdateGNSSOdometry();
-        if (UpdateLaserOdometry())
+        if (UpdateLaserOdometry()){
             PublishData();
+            SaveTrajectory();
+        
+        }
     }
 
     return true;
@@ -185,6 +189,39 @@ bool FrontEndFlow::PublishData() {
 
     return true;
 }
+
+bool FrontEndFlow::SaveTrajectory() {
+    static std::ofstream ground_truth, laser_odom;
+    static bool is_file_created = false;
+    if (!is_file_created) {
+        if (!FileManager::CreateDirectory(WORK_SPACE_PATH + "/slam_data/trajectory"))
+            return false;
+        if (!FileManager::CreateFile(ground_truth, WORK_SPACE_PATH + "/slam_data/trajectory/ground_truth.txt"))
+            return false;
+        if (!FileManager::CreateFile(laser_odom, WORK_SPACE_PATH + "/slam_data/trajectory/laser_odom.txt"))
+            return false;
+        is_file_created = true;
+    }
+
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            ground_truth << gnss_odometry_(i, j);
+            laser_odom << laser_odometry_(i, j);
+            if (i == 2 && j == 3) {
+                ground_truth << std::endl;
+                laser_odom << std::endl;
+            } else {
+                ground_truth << " ";
+                laser_odom << " ";
+            }
+        }
+    }
+
+    return true;
+}
+
+
+
 
 bool FrontEndFlow::SaveMap() {
     return front_end_ptr_->SaveMap();

@@ -9,6 +9,7 @@
 namespace localization {
 class VelocitySubscriber {
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     VelocitySubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size);
     VelocitySubscriber() = default;
     void ParseData(std::deque<VelocityData,Eigen::aligned_allocator<VelocityData>>& deque_velocity_data);
@@ -20,7 +21,7 @@ class VelocitySubscriber {
     ros::NodeHandle nh_;
     ros::Subscriber subscriber_;
 
-    std::deque<VelocityData> new_velocity_data_; 
+    std::deque<VelocityData,Eigen::aligned_allocator<VelocityData>> new_velocity_data_; 
 };
 }
 #endif

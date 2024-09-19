@@ -1,0 +1,10 @@
+Log file created at: 2024/09/21 09:28:12
+Running on machine: yuanyuan-Legion-Y9000P-IAH7H
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20240921 09:28:12.933253 139915695792512 file_manager.cpp:19] 关键帧点云存放地址：
+/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data/key_frames
+
+I20240921 09:28:12.933534 139915695792512 file_manager.cpp:36] 轨迹文件存放地址：
+/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data/trajectory
+

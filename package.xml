@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>localization_slam</name>
+  <name>localization</name>
   <version>1.0.0</version>
   <description>Lidar Odometry</description>
 

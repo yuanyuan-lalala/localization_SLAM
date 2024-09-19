@@ -15,6 +15,7 @@
 namespace localization {
 class GNSSSubscriber {
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     GNSSSubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size);
     GNSSSubscriber() = default;
     void ParseData(std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>>& deque_gnss_data);
@@ -27,7 +28,7 @@ class GNSSSubscriber {
     ros::NodeHandle nh_;
     ros::Subscriber subscriber_;
 
-    std::deque<GNSSData> new_gnss_data_;
+    std::deque<GNSSData,Eigen::aligned_allocator<GNSSData>> new_gnss_data_;
 };
 }
 #endif

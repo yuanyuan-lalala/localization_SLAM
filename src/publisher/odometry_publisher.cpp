@@ -13,8 +13,17 @@ OdometryPublisher::OdometryPublisher(ros::NodeHandle& nh,
     odometry_.child_frame_id = child_frame_id;
 }
 
+void OdometryPublisher::Publish(const Eigen::Matrix4f& transform_matrix, double time) {
+    ros::Time ros_time((float)time);
+    PublishData(transform_matrix, ros_time);
+}
+
 void OdometryPublisher::Publish(const Eigen::Matrix4f& transform_matrix) {
-    odometry_.header.stamp = ros::Time::now();
+    PublishData(transform_matrix, ros::Time::now());
+}
+
+void OdometryPublisher::PublishData(const Eigen::Matrix4f& transform_matrix, ros::Time time) {
+    odometry_.header.stamp = time;
 
     //set the position
     odometry_.pose.pose.position.x = transform_matrix(0,3);
@@ -30,4 +39,13 @@ void OdometryPublisher::Publish(const Eigen::Matrix4f& transform_matrix) {
 
     publisher_.publish(odometry_);
 }
+bool OdometryPublisher::HasSubscribers() {
+    return publisher_.getNumSubscribers() != 0;
+}
+
+
+
+
+
+
 }

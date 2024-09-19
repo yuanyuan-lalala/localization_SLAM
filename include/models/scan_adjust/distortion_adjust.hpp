@@ -12,6 +12,7 @@
 namespace localization {
 class DistortionAdjust {
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     void SetMotionInfo(float scan_period, VelocityData velocity_data);
     bool AdjustCloud(const CloudData<PointXYZIRT>::CLOUD_PTR& input_cloud_ptr, const CloudData<PointXYZIRT>::CLOUD_PTR& output_cloud_ptr);
 

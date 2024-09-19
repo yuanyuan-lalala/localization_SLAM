@@ -8,6 +8,11 @@ GeographicLib::LocalCartesian localization::GNSSData::geo_converter;
 
 namespace localization {
 
+
+double GNSSData::GetTime(){
+
+    return time;
+}
 void GNSSData::InitOriginPosition() {
     geo_converter.Reset(latitude, longitude, altitude);
     origin_position_inited = true;

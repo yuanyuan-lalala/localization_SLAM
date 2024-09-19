@@ -14,6 +14,7 @@
 namespace localization {
 class IMUSubscriber {
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     IMUSubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size);
     IMUSubscriber() = default;
     void ParseData(std::deque<IMUData,Eigen::aligned_allocator<IMUData>>& deque_imu_data);

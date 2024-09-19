@@ -19,9 +19,10 @@
 namespace localization {
 class CloudSubscriber {
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     CloudSubscriber(ros::NodeHandle& nh, std::string topic_name, size_t buff_size);
-    CloudSubscriber() = default;
-    void ParseData(std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<CloudData<PointXYZIRT>>>& deque_cloud_data);
+    // CloudSubscriber() = default;
+    void ParseData( std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<CloudData<PointXYZIRT>>>& deque_cloud_data);
 
   private:
     void msg_callback(const sensor_msgs::PointCloud2::ConstPtr& cloud_msg_ptr);
@@ -30,7 +31,7 @@ class CloudSubscriber {
     ros::NodeHandle nh_;
     ros::Subscriber subscriber_;
 
-    std::deque<CloudData<PointXYZIRT>> new_cloud_data_;
+    std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<PointXYZIRT>> new_cloud_data_;
 };
 }
 

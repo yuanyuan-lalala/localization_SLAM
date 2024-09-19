@@ -38,6 +38,7 @@ namespace localization {
         
         void InitOriginPosition();
         void UpdateXYZ();
+        double  GetTime();
     };
 }
 #endif

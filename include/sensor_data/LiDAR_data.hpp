@@ -53,6 +53,7 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(OusterPointXYZIRT,
 
 // using PointXYZIRT = LiovxPointCustomMsg;
 // using PointXYZIRT =VelodynePointXYZIRT;
+// EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 using PointXYZIRT = pcl::PointXYZ;
 
 namespace localization {
@@ -64,7 +65,7 @@ namespace localization {
     public:
         using CLOUD = pcl::PointCloud<PointT>;
         using CLOUD_PTR = typename CLOUD::Ptr;
-
+        CLOUD_PTR cloud_ptr_; 
     public:
         CloudData();
         CLOUD_PTR GetCloudData() ;
@@ -75,7 +76,7 @@ namespace localization {
 
     private:
         double time_ = 0.0;//fix???
-        CLOUD_PTR cloud_ptr_;  
+        
     };
 
     // 构造函数实现，初始化时间和点云数据

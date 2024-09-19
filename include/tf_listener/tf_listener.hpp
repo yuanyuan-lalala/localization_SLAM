@@ -9,6 +9,7 @@
 
 namespace localization {
 class TFListener {
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   public:
     TFListener(ros::NodeHandle& nh, std::string base_frame_id, std::string child_frame_id);
     TFListener() = default;

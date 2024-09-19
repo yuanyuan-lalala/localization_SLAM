@@ -96,6 +96,8 @@ link_directories(
   ${GTSAM_LIBRARY_DIRS}
 )
 
+
+
 file(GLOB_RECURSE ALL_SRCS "src/*.cpp")
 file(GLOB_RECURSE NODE_SRCS "src/*_node.cpp")
 file(GLOB_RECURSE THIRD_PARTY_SRCS "third_party/*.cpp")

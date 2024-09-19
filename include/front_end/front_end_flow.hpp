@@ -12,6 +12,7 @@
 #include "front_end/front_end.hpp"
 #include"subscriber/velocity_subscriber.hpp"
 #include"tools/file_manager.hpp"
+#include"models/scan_adjust/distortion_adjust.hpp"
 namespace localization {
 class FrontEndFlow {
   public:
@@ -46,6 +47,7 @@ class FrontEndFlow {
     std::shared_ptr<FrontEnd> front_end_ptr_;
     std::shared_ptr<VelocitySubscriber> velocity_sub_ptr_;
 
+    std::shared_ptr<DistortionAdjust> distortion_adjust_ptr_;
 
     std::deque<CloudData<PointXYZIRT>,Eigen::aligned_allocator<CloudData<PointXYZIRT>>> cloud_data_buff_;
     std::deque<IMUData, Eigen::aligned_allocator<IMUData>> imu_data_buff_;
@@ -53,9 +55,11 @@ class FrontEndFlow {
     std::deque<VelocityData,Eigen::aligned_allocator<VelocityData>> velocity_data_buff_;
     
     Eigen::Matrix4f lidar_to_imu_ = Eigen::Matrix4f::Identity();
+    
     CloudData<PointXYZIRT> current_cloud_data_;
     IMUData current_imu_data_;
     GNSSData current_gnss_data_;
+    VelocityData current_velocity_data_;
 
     CloudData<PointXYZIRT>::CLOUD_PTR local_map_ptr_;
     CloudData<PointXYZIRT>::CLOUD_PTR global_map_ptr_;

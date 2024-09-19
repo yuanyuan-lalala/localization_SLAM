@@ -20,7 +20,7 @@ FrontEndFlow::FrontEndFlow(ros::NodeHandle& nh) {
 
     // front_end_ptr_ = std::make_shared<FrontEnd>();
     front_end_ptr_ = std::shared_ptr<FrontEnd>(new FrontEnd());
-
+    distortion_adjust_ptr_ = std::make_shared<DistortionAdjust>();
     if (!front_end_ptr_->IsInitialized()) {
         std::cerr << "FrontEnd initialization failed. Exiting." << std::endl;
         
@@ -162,6 +162,11 @@ bool FrontEndFlow::UpdateGNSSOdometry() {
 }
 
 bool FrontEndFlow::UpdateLaserOdometry() {
+    current_velocity_data_.TransformCoordinate(lidar_to_imu_);
+    
+    distortion_adjust_ptr_->SetMotionInfo(0.1, current_velocity_data_);
+    distortion_adjust_ptr_->AdjustCloud(current_cloud_data_.GetCloudData(), current_cloud_data_.GetCloudData());
+    
     static bool front_end_pose_inited = false;
     if (!front_end_pose_inited) {
         front_end_pose_inited = true;

@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     ros::init(argc, argv, "viewer_node");
     ros::NodeHandle nh;
 
-    ros::ServiceServer service = nh.advertiseService("save_map", save_map_callback);
+    ros::ServiceServer service = nh.advertiseService("/save_map", save_map_callback);
     // std::shared_ptr<ViewerFlow> _viewer_flow_ptr = std::make_shared<ViewerFlow>(nh);
     auto _viewer_flow_ptr= std::allocate_shared<localization::ViewerFlow>(
     Eigen::aligned_allocator<localization::ViewerFlow>(), nh);

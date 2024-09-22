@@ -5,7 +5,7 @@ set(CMAKE_BUILD_TYPE "Release")
 # set(CMAKE_BUILD_TYPE Debug)
 # add_compile_options(-g -O0)
 
-# set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 17)
 # set(CMAKE_CXX_FLAGS "-std=c++11")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g -pthread")
 set(CMAKE_CXX_STANDARD 14)
@@ -38,7 +38,9 @@ find_package(GTSAM REQUIRED QUIET)
 find_package(Boost REQUIRED COMPONENTS timer)
 find_package(Eigen3 REQUIRED)
 find_package(Glog REQUIRED)
-
+# include_directories(/usr/local/include)
+find_package(g2o REQUIRED)
+# link_directories(/usr/local/lib)
 add_message_files(
   DIRECTORY msg
   FILES
@@ -88,12 +90,14 @@ include_directories(
   ${YAML_CPP_INCLUDE_DIR}
 )
 include_directories(/home/yuanyuan/Documents/homework/devel/include/localization)
+include_directories(${G2O_INCLUDE_DIRS})
 # link directories
 link_directories(
 	include
 	${PCL_LIBRARY_DIRS}
   ${OpenCV_LIBRARY_DIRS}
   ${GTSAM_LIBRARY_DIRS}
+  
 )
 
 file(GLOB_RECURSE ALL_SRCS "src/*.cpp")
@@ -109,26 +113,37 @@ list(REMOVE_ITEM ALL_SRCS ${THIRD_PARTY_SRCS})
 # add_dependencies(front_end_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # add_dependencies(front_end_node ${catkin_EXPORTED_TARGETS} saveMap_gencpp)
 # target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp )
-
+set(G2O_LIBS
+    g2o_core
+    g2o_stuff
+    g2o_types_slam3d
+    g2o_solver_csparse
+    g2o_csparse_extension
+    cholmod
+    cxsparse
+    pthread  # 如果需要
+    g2o_solver_pcg
+    g2o_solver_cholmod
+)
 
 add_executable(test_frame_node src/apps/test_frame_node.cpp ${ALL_SRCS})
-target_link_libraries(test_frame_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(test_frame_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp ${G2O_LIBS})
 
 add_executable(data_pretreat_node src/apps/data_pretreat_node.cpp ${ALL_SRCS})
 add_dependencies(data_pretreat_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(data_pretreat_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(data_pretreat_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp ${G2O_LIBS})
 
 add_executable(front_end_node src/apps/front_end_node.cpp ${ALL_SRCS})
 add_dependencies(front_end_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(front_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp ${G2O_LIBS})
 
 add_executable(back_end_node src/apps/back_end_node.cpp ${ALL_SRCS})
 add_dependencies(back_end_node ${catkin_EXPORTED_TARGETS})
-target_link_libraries(back_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(back_end_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp ${G2O_LIBS})
 
 add_executable(viewer_node src/apps/viewer_node.cpp ${ALL_SRCS})
 add_dependencies(viewer_node ${catkin_EXPORTED_TARGETS} saveMap_gencpp)
-target_link_libraries(viewer_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp)
+target_link_libraries(viewer_node ${catkin_LIBRARIES} ${ALL_TARGET_LIBRARIES} glog::glog ${PCL_LIBRARIES} yaml-cpp ${G2O_LIBS})
 
 
 

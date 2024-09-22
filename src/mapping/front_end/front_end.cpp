@@ -12,7 +12,8 @@ namespace localization {
 
 FrontEnd::FrontEnd()
 
-    : local_map_ptr_(new CloudData<PointXYZIRT>::CLOUD()),
+    :local_map_ptr_(boost::allocate_shared<CloudData<PointXYZIRT>::CLOUD>(
+          Eigen::aligned_allocator<CloudData<PointXYZIRT>::CLOUD>())), 
       initialized_(false) {  // 添加一个标志位
 
     if (!InitWithConfig()) {
@@ -157,7 +158,9 @@ bool FrontEnd::SetInitPose(const Eigen::Matrix4f& init_pose) {
 
     // 局部地图容器中没有关键帧，代表是第一帧数据
     // 此时把当前帧数据作为第一个关键帧，并更新局部地图容器和全局地图容器
+    //第一帧
     if (local_map_frames_.size() == 0) {
+        //第一帧肯定很关键
         current_frame_.pose = init_pose_;
         UpdateWithNewFrame(current_frame_);
         cloud_pose = current_frame_.pose;
@@ -186,20 +189,27 @@ bool FrontEnd::SetInitPose(const Eigen::Matrix4f& init_pose) {
 }
 
 bool FrontEnd::UpdateWithNewFrame(const Frame& new_key_frame) {
+    //新建一个关键帧
     Frame key_frame = new_key_frame;
     // 这一步的目的是为了把关键帧的点云保存下来
     // 由于用的是共享指针，所以直接复制只是复制了一个指针而已
     // 此时无论你放多少个关键帧在容器里，这些关键帧点云指针都是指向的同一个点云
     key_frame.cloud_data.GetCloudData().reset(new CloudData<PointXYZIRT>::CLOUD(*new_key_frame.cloud_data.GetCloudData()));
-    CloudData<PointXYZIRT>::CLOUD_PTR transformed_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
     
-    // 更新局部地图
+    
+    
+    // 更新局部地图  导入关键帧
     local_map_frames_.push_back(key_frame);
+    //局部地图帧数不能比规定的多，限定在一个范围中
     while (local_map_frames_.size() > static_cast<size_t>(local_frame_num_)) {
         local_map_frames_.pop_front();
     }
+
     local_map_ptr_.reset(new CloudData<PointXYZIRT>::CLOUD());
+    //转换后的点云
+    CloudData<PointXYZIRT>::CLOUD_PTR transformed_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
     for (size_t i = 0; i < local_map_frames_.size(); ++i) {
+        //将当前地图中的所有帧全部变换到同一坐标系下
         pcl::transformPointCloud(*local_map_frames_.at(i).cloud_data.GetCloudData(), 
                                  *transformed_cloud_ptr, 
                                  local_map_frames_.at(i).pose);
@@ -220,149 +230,6 @@ bool FrontEnd::UpdateWithNewFrame(const Frame& new_key_frame) {
     return true;
 }
 
-// bool FrontEnd::Update(const CloudData<PointXYZIRT>& cloud_data, Eigen::Matrix4f& cloud_pose) {
-//     current_frame_.cloud_data.SetTime(cloud_data.GetTime());
-//     std::vector<int> indices;
-//     pcl::removeNaNFromPointCloud(*cloud_data.GetCloudData(), *current_frame_.cloud_data.GetCloudData(), indices);
 
-//     CloudData<PointXYZIRT>::CLOUD_PTR filtered_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
-//     frame_filter_ptr_->Filter(current_frame_.cloud_data.GetCloudData(), filtered_cloud_ptr);
-
-//     static Eigen::Matrix4f step_pose = Eigen::Matrix4f::Identity();
-//     static Eigen::Matrix4f last_pose = init_pose_;
-//     static Eigen::Matrix4f predict_pose = init_pose_;
-//     static Eigen::Matrix4f last_key_frame_pose = init_pose_;
-
-//     // 局部地图容器中没有关键帧，代表是第一帧数据
-//     // 此时把当前帧数据作为第一个关键帧，并更新局部地图容器和全局地图容器
-//     if (local_map_frames_.size() == 0) {
-//         current_frame_.pose = init_pose_;
-//         UpdateWithNewFrame(current_frame_);
-//         cloud_pose = current_frame_.pose;
-//         return true;
-//     }
-
-//     // 不是第一帧，就正常匹配
-//     registration_ptr_->ScanMatch(filtered_cloud_ptr, predict_pose, result_cloud_ptr_, current_frame_.pose);
-//     cloud_pose = current_frame_.pose;
-
-//     // 更新相邻两帧的相对运动
-//     step_pose = last_pose.inverse() * current_frame_.pose;
-//     predict_pose = current_frame_.pose * step_pose;
-//     last_pose = current_frame_.pose;
-
-//     // 匹配之后根据距离判断是否需要生成新的关键帧，如果需要，则做相应更新
-//     if (fabs(last_key_frame_pose(0,3) - current_frame_.pose(0,3)) + 
-//         fabs(last_key_frame_pose(1,3) - current_frame_.pose(1,3)) +
-//         fabs(last_key_frame_pose(2,3) - current_frame_.pose(2,3)) > key_frame_distance_) {
-//         UpdateWithNewFrame(current_frame_);
-//         last_key_frame_pose = current_frame_.pose;
-//     }
-
-//     return true;
-// }
-
-
-
-// bool FrontEnd::UpdateWithNewFrame(const Frame& new_key_frame) {
-//     // 把关键帧点云存储到硬盘里，节省内存
-//     std::string file_path = data_path_ + "/key_frames/key_frame_" + std::to_string(global_map_frames_.size()) + ".pcd";
-//     pcl::io::savePCDFileBinary(file_path, *new_key_frame.cloud_data.GetCloudData());
-
-//     Frame key_frame = new_key_frame;
-//     // 这一步的目的是为了把关键帧的点云保存下来
-//     // 由于用的是共享指针，所以直接复制只是复制了一个指针而已
-//     // 此时无论你放多少个关键帧在容器里，这些关键帧点云指针都是指向的同一个点云
-//     key_frame.cloud_data.GetCloudData().reset(new CloudData<PointXYZIRT>::CLOUD(*new_key_frame.cloud_data.GetCloudData()));
-//     CloudData<PointXYZIRT>::CLOUD_PTR transformed_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
-    
-//     // 更新局部地图
-//     local_map_frames_.push_back(key_frame);
-//     while (local_map_frames_.size() > static_cast<size_t>(local_frame_num_)) {
-//         local_map_frames_.pop_front();
-//     }
-//     local_map_ptr_.reset(new CloudData<PointXYZIRT>::CLOUD());
-//     for (size_t i = 0; i < local_map_frames_.size(); ++i) {
-//         pcl::transformPointCloud(*local_map_frames_.at(i).cloud_data.GetCloudData(), 
-//                                  *transformed_cloud_ptr, 
-//                                  local_map_frames_.at(i).pose);
-//         *local_map_ptr_ += *transformed_cloud_ptr;
-//     }
-//     has_new_local_map_ = true;
-
-//     // 更新ndt匹配的目标点云
-//     // 关键帧数量还比较少的时候不滤波，因为点云本来就不多，太稀疏影响匹配效果
-//     if (local_map_frames_.size() < 10) {
-//         registration_ptr_->SetInputTarget(local_map_ptr_);
-//     } else {
-//         CloudData<PointXYZIRT>::CLOUD_PTR filtered_local_map_ptr(new CloudData<PointXYZIRT>::CLOUD());
-//         local_map_filter_ptr_->Filter(local_map_ptr_, filtered_local_map_ptr);
-//         registration_ptr_->SetInputTarget(filtered_local_map_ptr);
-//     }
-
-//     // 保存所有关键帧信息在容器里
-//     // 存储之前，点云要先释放，因为已经存到了硬盘里，不释放也达不到节省内存的目的
-//     key_frame.cloud_data.GetCloudData().reset(new CloudData<PointXYZIRT>::CLOUD());
-//     global_map_frames_.push_back(key_frame);
-
-//     return true;
-// }
-
-// bool FrontEnd::SaveMap() {
-//     global_map_ptr_.reset(new CloudData<PointXYZIRT>::CLOUD());
-
-//     std::string key_frame_path = "";
-//     CloudData<PointXYZIRT>::CLOUD_PTR key_frame_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
-//     CloudData<PointXYZIRT>::CLOUD_PTR transformed_cloud_ptr(new CloudData<PointXYZIRT>::CLOUD());
-
-//     for (size_t i = 0; i < global_map_frames_.size(); ++i) {
-//         key_frame_path = data_path_ + "/key_frames/key_frame_" + std::to_string(i) + ".pcd";
-//         pcl::io::loadPCDFile(key_frame_path, *key_frame_cloud_ptr);
-
-//         pcl::transformPointCloud(*key_frame_cloud_ptr, 
-//                                 *transformed_cloud_ptr, 
-//                                 global_map_frames_.at(i).pose);
-//         *global_map_ptr_ += *transformed_cloud_ptr;
-//     }
-    
-//     std::string map_file_path = data_path_ + "/map.pcd";
-//     pcl::io::savePCDFileBinary(map_file_path, *global_map_ptr_);
-//     has_new_global_map_ = true;
-
-//     return true;
-// }
-
-// bool FrontEnd::GetNewLocalMap(CloudData<PointXYZIRT>::CLOUD_PTR& local_map_ptr) {
-//     if (has_new_local_map_) {
-//         display_filter_ptr_->Filter(local_map_ptr_, local_map_ptr);
-//         return true;
-//     }
-//     return false;
-// }
-
-// bool FrontEnd::GetNewGlobalMap(CloudData<PointXYZIRT>::CLOUD_PTR& global_map_ptr) {
-//     if (has_new_global_map_) {
-//         has_new_global_map_ = false;
-//         display_filter_ptr_->Filter(global_map_ptr_, global_map_ptr);
-//         global_map_ptr_.reset(new CloudData<PointXYZIRT>::CLOUD());
-//         return true;
-//     }
-//     return false;
-// }
-
-// bool FrontEnd::GetCurrentScan(CloudData<PointXYZIRT>::CLOUD_PTR& current_scan_ptr) {
-//     if (!initialized_) {
-//         std::cerr << "Error: FrontEnd is not properly initialized." << std::endl;
-//         return false;
-//     }
-
-//     if (!display_filter_ptr_ || !result_cloud_ptr_) {
-//         std::cerr << "Error: display_filter_ptr_ or result_cloud_ptr_ is null." << std::endl;
-//         return false;
-//     }
-
-//     display_filter_ptr_->Filter(result_cloud_ptr_, current_scan_ptr);
-//     return true;
-// }
 
 }

@@ -1,0 +1,19 @@
+Log file created at: 2024/09/22 21:04:53
+Running on machine: yuanyuan-Legion-Y9000P-IAH7H
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20240922 21:04:53.936609 140047314571904 front_end.cpp:96] 地图点云存放地址：/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data
+I20240922 21:04:53.937894 140047314571904 front_end.cpp:105] 关键帧点云存放地址：/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data/key_frames
+
+I20240922 21:04:53.937909 140047314571904 front_end.cpp:113] 点云匹配方式为：NDT
+I20240922 21:04:53.938728 140047314571904 ndt_registration.cpp:30] NDT 的匹配参数为：
+res: 1, step_size: 0.1, trans_eps: 0.01, max_iter: 30
+
+I20240922 21:04:53.938760 140047314571904 front_end.cpp:127] local_map选择的滤波方法为：voxel_filter
+I20240922 21:04:53.938778 140047314571904 voxel_filter.cpp:22] Voxel Filter 的参数为：
+0.6, 0.6, 0.6
+
+I20240922 21:04:53.938798 140047314571904 front_end.cpp:127] frame选择的滤波方法为：voxel_filter
+I20240922 21:04:53.938817 140047314571904 voxel_filter.cpp:22] Voxel Filter 的参数为：
+1.3, 1.3, 1.3
+

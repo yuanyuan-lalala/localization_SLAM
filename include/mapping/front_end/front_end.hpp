@@ -12,11 +12,11 @@
 #include"sensor_data/IMU_data.hpp"
 #include "models/registration/ndt_registration.hpp"
 #include "models/cloud_filter/voxel_filter.hpp"
-
+#include <boost/make_shared.hpp>
 namespace localization {
 class FrontEnd {
   public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // 保证内存对齐
+  // EIGEN_MAKE_ALIGNED_OPERATOR_NEW  // 保证内存对齐
     struct Frame { 
         EIGEN_MAKE_ALIGNED_OPERATOR_NEW 
         Eigen::Matrix4f pose = Eigen::Matrix4f::Identity();
@@ -25,6 +25,7 @@ class FrontEnd {
     };
 
   public:
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
   
     FrontEnd();
 

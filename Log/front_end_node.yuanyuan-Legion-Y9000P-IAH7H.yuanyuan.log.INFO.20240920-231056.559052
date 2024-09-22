@@ -1,5 +1,0 @@
-Log file created at: 2024/09/20 23:10:56
-Running on machine: yuanyuan-Legion-Y9000P-IAH7H
-Running duration (h:mm:ss): 0:00:00
-Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
-I20240920 23:10:56.639851 140737062830464 front_end.cpp:94] 地图点云存放地址：/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data

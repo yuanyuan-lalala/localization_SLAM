@@ -1,0 +1,19 @@
+Log file created at: 2024/09/22 21:04:53
+Running on machine: yuanyuan-Legion-Y9000P-IAH7H
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20240922 21:04:53.992654 140317410751104 file_manager.cpp:36] 点云地图文件存放地址：
+/home/yuanyuan/Documents/homework/src/localization_SLAM/slam_data/map
+
+I20240922 21:04:53.993333 140317410751104 viewer.cpp:83] viewer_frame选择的滤波方法为：voxel_filter
+I20240922 21:04:53.993365 140317410751104 voxel_filter.cpp:22] Voxel Filter 的参数为：
+0.5, 0.5, 0.5
+
+I20240922 21:04:53.993395 140317410751104 viewer.cpp:83] viewer_local_map选择的滤波方法为：voxel_filter
+I20240922 21:04:53.993407 140317410751104 voxel_filter.cpp:22] Voxel Filter 的参数为：
+0.5, 0.5, 0.5
+
+I20240922 21:04:53.993426 140317410751104 viewer.cpp:83] viewer_global_map选择的滤波方法为：voxel_filter
+I20240922 21:04:53.993440 140317410751104 voxel_filter.cpp:22] Voxel Filter 的参数为：
+0.5, 0.5, 0.5
+
